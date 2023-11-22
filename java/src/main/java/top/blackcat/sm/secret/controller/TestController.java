@@ -6,7 +6,10 @@ import org.springframework.web.bind.annotation.RestController;
 import top.blackcat.sm.secret.annotation.SecretEncrypt;
 import top.blackcat.sm.secret.result.Result;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Title: 写注释，下班早
@@ -21,7 +24,7 @@ public class TestController {
 
 
     /***
-     * 加解密 测试 map
+     * 加解密 测试 map 里 放 list
      * @param realName
      * @param phone
      * @return
@@ -29,12 +32,82 @@ public class TestController {
     @SecretEncrypt(type = 0, optField = {"realName", "phone"})
     @RequestMapping(value = "/testMap", method = {RequestMethod.GET, RequestMethod.POST})
     public Result<Object> testMap(String realName, String phone) {
-        HashMap data = new HashMap<>();
-        data.put("phone", phone);
-        data.put("realName", realName);
-        return Result.success(data);
+        HashMap data1 = new HashMap<>();
+        data1.put("phone", phone);
+        data1.put("realName", realName);
+        HashMap data2 = new HashMap<>();
+        data2.put("phone", phone);
+        data2.put("realName", realName);
+
+        HashMap data3 = new HashMap<>();
+        data3.put("phone", phone);
+        data3.put("realName", realName);
+
+        List list = new ArrayList<>();
+        list.add(data1);
+        list.add(data2);
+        list.add(data3);
+
+        Map map=new HashMap<>();
+        map.put("ds1",list);
+        return Result.success(map);
+    }
+
+    /***
+     * 测试 list
+     * @param realName
+     * @param phone
+     * @return
+     */
+    @SecretEncrypt(type = 0, optField = {"realName", "phone"})
+    @RequestMapping(value = "/testMap2", method = {RequestMethod.GET, RequestMethod.POST})
+    public Object testMap2(String realName, String phone) {
+        HashMap data1 = new HashMap<>();
+        data1.put("phone", phone);
+        data1.put("realName", realName);
+        HashMap data2 = new HashMap<>();
+        data2.put("phone", phone);
+        data2.put("realName", realName);
+
+        HashMap data3 = new HashMap<>();
+        data3.put("phone", phone);
+        data3.put("realName", realName);
+
+        List list = new ArrayList<>();
+        list.add(data1);
+        list.add(data2);
+        list.add(data3);
+        return list;
+    }
+
+    /***
+     * 测试 map
+     * @param realName
+     * @param phone
+     * @return
+     */
+    @SecretEncrypt(type = 0, optField = {"realName", "phone"})
+    @RequestMapping(value = "/testMap3", method = {RequestMethod.GET, RequestMethod.POST})
+    public Object testMap3(String realName, String phone) {
+        HashMap data1 = new HashMap<>();
+        data1.put("phone", phone);
+        data1.put("realName", realName);
+
+        return data1;
     }
 
 
+    /***
+     * 测试 string
+     * @param realName
+     * @param phone
+     * @return
+     */
+    @SecretEncrypt(type = 0, optField = {"realName", "phone"})
+    @RequestMapping(value = "/testMap4", method = {RequestMethod.GET, RequestMethod.POST})
+    public Object testMap4(String realName, String phone) {
+
+        return realName;
+    }
 
 }
