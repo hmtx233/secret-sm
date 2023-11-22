@@ -3,6 +3,7 @@ package top.blackcat.sm.secret.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import top.blackcat.sm.secret.User;
 import top.blackcat.sm.secret.annotation.SecretEncrypt;
 import top.blackcat.sm.secret.result.Result;
 
@@ -48,8 +49,8 @@ public class TestController {
         list.add(data2);
         list.add(data3);
 
-        Map map=new HashMap<>();
-        map.put("ds1",list);
+        Map map = new HashMap<>();
+        map.put("ds1", list);
         return Result.success(map);
     }
 
@@ -92,7 +93,6 @@ public class TestController {
         HashMap data1 = new HashMap<>();
         data1.put("phone", phone);
         data1.put("realName", realName);
-
         return data1;
     }
 
@@ -105,9 +105,11 @@ public class TestController {
      */
     @SecretEncrypt(type = 0, optField = {"realName", "phone"})
     @RequestMapping(value = "/testMap4", method = {RequestMethod.GET, RequestMethod.POST})
-    public Object testMap4(String realName, String phone) {
-
-        return realName;
+    public User testMap4(String realName, String phone) {
+        User user = new User();
+        user.setRealName(realName);
+        user.setPhone(phone);
+        return user;
     }
 
 }

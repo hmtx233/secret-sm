@@ -19,12 +19,14 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
 
 /**
  * @author Jelly
- * @create 2021/3/27 17:01
+ * @create 2023/11/20 17:01
  * @desc 加解密切面 aop
  **/
 @Aspect
@@ -89,7 +91,7 @@ public class SecretEncryptAop {
                 }
             }
         } catch (Throwable e) {
-            log.error(e.toString());
+            e.printStackTrace();
         } finally {
             long endTime = System.currentTimeMillis();
             long excTime = (endTime - startTime);
@@ -114,30 +116,32 @@ public class SecretEncryptAop {
      */
     private void encryptValues(Method method, Object[] values, String[] names, Object[] fields) {
         for (int i = 0; i < values.length; i++) {
+            Object value = values[i];
             // String 参数
-            if (values[i] instanceof String) {
-                for (int j = 0; j < fields.length; j++) {
-                    if (fields[j].toString().equals(names[i])) {
-                        String paramValue = values[i].toString();
+            if (value instanceof String) {
+                for (Object field : fields) {
+                    if (field.toString().equals(names[i])) {
+                        String paramValue = value.toString();
                         paramValue = postSecretApi(1, paramValue);
                         values[i] = paramValue;
                         break;
                     }
                 }
-                // RequestBody 注解的 json 参数
-            } else if (Arrays.stream(method.getParameterAnnotations()[i]).anyMatch(item -> item.annotationType().equals(RequestBody.class))) {
-                JSONObject data2 = JSONObject.parseObject(JSON.toJSONString(values[i]));
-                for (String key : data2.keySet()) {
-                    for (int j = 0; j < fields.length; j++) {
+            }
+            // RequestBody 注解的 json 参数
+            else if (Arrays.stream(method.getParameterAnnotations()[i]).anyMatch(item -> item.annotationType().equals(RequestBody.class))) {
+                JSONObject data2 = JSONObject.parseObject(JSON.toJSONString(value));
+                data2.keySet().forEach(key -> {
+                    for (Object field : fields) {
                         String paramValue = data2.getString(key);
-                        if (fields[j].toString().equals(key) && paramValue instanceof String) {
+                        if (field.toString().equals(key) && paramValue instanceof String) {
                             paramValue = postSecretApi(1, paramValue);
                             data2.put(key, paramValue);
                             break;
                         }
                     }
-                }
-                values[i] = JSONObject.parseObject(data2.toString(), values[i].getClass());
+                });
+                values[i] = JSONObject.parseObject(data2.toString(), value.getClass());
             }
         }
     }
@@ -156,6 +160,7 @@ public class SecretEncryptAop {
         } else {
             handleDecryptValue(result, fields);
         }
+
     }
 
     /***
@@ -179,13 +184,7 @@ public class SecretEncryptAop {
      * @param fields
      */
     private void handleDecryptList(List list, Object[] fields) {
-        for (int i = 0; i < list.size(); i++) {
-            Object record = list.get(i);
-            if (record instanceof Map) {
-                handleDecryptMap((Map) record, fields);
-            }
-            list.set(i, record);
-        }
+        list.stream().filter(record -> record instanceof Map).forEach(record -> handleDecryptMap((Map) record, fields));
     }
 
     /***
@@ -194,48 +193,58 @@ public class SecretEncryptAop {
      * @param fields
      */
     private void handleDecryptMap(Map map, Object[] fields) {
-        Iterator<String> iterator = map.keySet().iterator();
-        while (iterator.hasNext()) {
-            String key = iterator.next();
-            Object value = map.get(key);
+        map.forEach((key, value) -> {
             if (value instanceof List) {
                 handleDecryptList((List) value, fields);
-            } else if (value instanceof String) {
-                for (int i = 0; i < fields.length; i++) {
-                    if (fields[i].toString().equals(key)) {
-                        String paramValue = value.toString();
-                        paramValue = postSecretApi(2, paramValue);
-                        map.put(key, paramValue);
-                        break;
-                    }
-                }
+            } else if (value instanceof String && Arrays.asList(fields).contains(key)) {
+                String paramValue = value.toString();
+                paramValue = postSecretApi(2, paramValue);
+                map.put(key, paramValue);
             } else {
                 handleDecryptObj(value, fields);
             }
-        }
+        });
     }
 
 
     /***
-     * 处理 object
+     * 处理 object 自己项目里定义的
      * @param object
      * @param fields
      */
     private void handleDecryptObj(Object object, Object[] fields) {
-        JSONObject jsonData = JSONObject.parseObject(JSON.toJSONString(object));
-        for (String key : jsonData.keySet()) {
-            Object value = jsonData.get(key);
-            if (value instanceof String) {
-                for (int i = 0; i < fields.length; i++) {
-                    if (fields[i].toString().equals(key)) {
-                        String paramValue = value.toString();
-                        paramValue = postSecretApi(2, paramValue);
-                        jsonData.put(key, paramValue);
-                        break;
+        if (object instanceof Serializable) {
+            try {
+                // 获取类的所有属性
+                Field[] refFields = object.getClass().getDeclaredFields();
+                // 遍历属性并打印属性名
+                for (Field field : refFields) {
+                    for (int i = 0; i < fields.length; i++) {
+                        String fieldName = fields[i].toString();
+                        if (fieldName.equals(field.getName())) {
+                            field.setAccessible(true);
+                            Object value = field.get(object);
+                            if (value instanceof String) {
+                                String paramValue = postSecretApi(2, value.toString());
+                                String setterName = "set" + capitalize(fieldName); // 构造setter函数名
+                                Method setterMethod = object.getClass().getMethod(setterName, String.class);
+                                setterMethod.invoke(object, paramValue);
+                                break;
+                            }
+                        }
                     }
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
+    }
+
+    private static String capitalize(String str) {
+        if (str == null || str.isEmpty()) {
+            return str;
+        }
+        return Character.toUpperCase(str.charAt(0)) + str.substring(1);
     }
 
     /***
