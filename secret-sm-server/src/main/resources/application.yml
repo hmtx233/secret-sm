@@ -1,0 +1,95 @@
+server:
+  port: 8062
+  # 设置 session过期时间
+  # PT 拼接 数值 拼接 H / M / S
+  servlet:
+    session:
+      timeout: PT60M
+
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://localhost:3306/secret-sm?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=Asia/Shanghai
+    username: root
+    password: fulong
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # druid
+    druid:
+      initial-size: 5
+      max-active: 20
+      min-idle: 5
+      max-wait: 30000
+      testWhileIdle: true
+      validationQuery: select 1 from dual
+    jackson:
+      date-format: yyyy-MM-dd HH:mm:ss
+      time-zone: GMT+8
+    servlet:
+      multipart:
+        max-file-size: 500MB
+        max-request-size: 200MB
+  application:
+    name: secret-sm
+  profiles:
+    active: dev
+  main:
+    allow-bean-definition-overriding: true
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 200MB
+
+  ###################redis配置##########################
+  redis:
+    # 主机
+    host: 192.168.0.212
+    # Redis服务器连接端口
+    port: 6379
+    # 服务器连接密码（默认为空）
+    password: 123456
+    # 库
+    database: 4
+    # 超时时间
+    timeout: 15000
+    pool:
+      # 连接池最大连接数（使用负值表示没有限制）
+      max-active: 8
+      # 连接池最大阻塞等待时间（使用负值表示没有限制）
+      max-wait: -1
+      # 连接池中的最大空闲连接
+      max-idle: 8
+      # 连接池中的最小空闲连接
+      min-idle: 0
+
+management:
+  #port: 9000
+  security:
+    enabled: false
+  endpoint:
+    health:
+      show-details: always
+
+application:
+  # 密评改造配置
+  secret:
+    app-id: APP_0FE9D4B351314168B29B6E810F81B33E
+    url: http://192.159.104.123:13001/mssgApi/
+    #  加解密字段 谨慎配置 匹配上就会 进行加解密 操作
+    opt-field: phone,idCard,realName
+
+# mybatis-plus 配置
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  typeAliasesPackage: top.blackcat.sm.secret.entity
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true
+
+#日志打印
+logging:
+  config: classpath:logback-spring.xml
+
+#debug: on

@@ -1,0 +1,69 @@
+server:
+  port: 8063
+  # 设置 session过期时间
+  # PT 拼接 数值 拼接 H / M / S
+  servlet:
+    session:
+      timeout: PT60M
+
+spring:
+  application:
+    name: secret-sm
+  profiles:
+    active: dev
+  main:
+    allow-bean-definition-overriding: true
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 200MB
+
+  ###################redis配置##########################
+  redis:
+    # 主机
+    host: 192.168.0.212
+    # Redis服务器连接端口
+    port: 6379
+    # 服务器连接密码（默认为空）
+    password: 123456
+    # 库
+    database: 4
+    # 超时时间
+    timeout: 15000
+    pool:
+      # 连接池最大连接数（使用负值表示没有限制）
+      max-active: 8
+      # 连接池最大阻塞等待时间（使用负值表示没有限制）
+      max-wait: -1
+      # 连接池中的最大空闲连接
+      max-idle: 8
+      # 连接池中的最小空闲连接
+      min-idle: 0
+
+management:
+  #port: 9000
+  security:
+    enabled: false
+  endpoint:
+    health:
+      show-details: always
+
+application:
+  # 密评改造配置
+  secret:
+    app-id: 24uvzf3x8N
+    url: http://localhost:8062
+    #  加解密字段 谨慎配置 匹配上就会 进行加解密 操作
+    opt-field: phone,idCard,realName
+    key: a72f2ac4933ae2d08a9b7c58ca77f6808bc6662452bb2e64743c73f6b17b532c1
+    sign-key: 5699f43d2b584dcd85f4080204b6fab1
+
+
+#日志打印
+logging:
+  config: classpath:logback-spring.xml
+
+#debug: on
