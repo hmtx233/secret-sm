@@ -12,7 +12,6 @@ import java.util.Base64;
  * @Date: 2023/11/24
  * @Version V1.0
  */
-@Component
 public class Base64Utils {
 
 

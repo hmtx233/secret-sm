@@ -22,7 +22,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
-import top.blackcat.sm.utils.Base64Utils;
 import top.blackcat.sm.utils.SmUtils;
 
 import java.io.Serializable;

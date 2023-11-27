@@ -25,7 +25,6 @@ import java.security.spec.X509EncodedKeySpec;
 /***
  * sm算法
  */
-@Component
 public class SmUtils {
 
     /***

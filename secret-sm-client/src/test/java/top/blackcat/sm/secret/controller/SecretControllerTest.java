@@ -26,7 +26,7 @@ class SecretControllerTest {
     @Value("${application.secret.key}")
     private String key;
 
-    String text = "海波";
+    String text = "黑猫";
 
 
     @Test

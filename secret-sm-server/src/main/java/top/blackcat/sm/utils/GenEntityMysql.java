@@ -1,4 +1,4 @@
-package top.blackcat.sm;
+package top.blackcat.sm.utils;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -80,13 +80,9 @@ public class GenEntityMysql {
         sb.append(" */ \r\n");
         sb.append("@Entity \r\n");
         sb.append("@Table(name=\"" + tableName + "\") \r\n");
-
         // 实体部分
         sb.append("public class " + getTransStr(tableName, true) + " implements Serializable {\r\n\r\n");
         processAllAttrs(tableName, sb); // 属性
-        sb.append("\r\n");
-        processAllMethod(sb); // get set方法
-        sb.append("}\r\n");
         return sb.toString();
     }
 

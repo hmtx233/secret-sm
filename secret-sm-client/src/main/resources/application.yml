@@ -58,7 +58,7 @@ application:
     url: http://localhost:8062
     #  加解密字段 谨慎配置 匹配上就会 进行加解密 操作
     opt-field: phone,idCard,realName
-    key: a72f2ac4933ae2d08a9b7c58ca77f6808bc6662452bb2e64743c73f6b17b532c1
+    key: a72f2ac4933ae2d08a9b7c58ca77f6808bc6662452bb2e64743c73f6b17b532c
     sign-key: 5699f43d2b584dcd85f4080204b6fab1
 
 
