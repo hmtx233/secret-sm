@@ -11,7 +11,7 @@ import top.blackcat.sm.secret.result.Result;
 
 /**
  * @Title: 写注释，下班早
- * @Desc: 加解密接口
+ * @Desc: 客户端查询接口
  * @Author: Jelly
  * @Date: 2023/10/25
  * @Version V1.0
