@@ -72,13 +72,6 @@ management:
     health:
       show-details: always
 
-application:
-  # 密评改造配置
-  secret:
-    app-id: APP_0FE9D4B351314168B29B6E810F81B33E
-    url: http://192.159.104.123:13001/mssgApi/
-    #  加解密字段 谨慎配置 匹配上就会 进行加解密 操作
-    opt-field: phone,idCard,realName
 
 # mybatis-plus 配置
 mybatis-plus:

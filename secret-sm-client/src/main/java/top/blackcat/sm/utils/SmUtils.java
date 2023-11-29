@@ -13,7 +13,6 @@ import org.bouncycastle.jce.ECNamedCurveTable;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.jce.spec.ECNamedCurveParameterSpec;
 import org.bouncycastle.util.encoders.Hex;
-import org.springframework.stereotype.Component;
 import top.blackcat.sm.secret.vo.KeyPairVO;
 
 import java.nio.charset.StandardCharsets;
