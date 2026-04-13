@@ -11,7 +11,7 @@ class SmUtilsTest {
         for (int i = 0; i < 10; i++) {
             String hash1 = SmUtils.hashBySm3(str);
             String hash2 = SmUtils.hashBySm3(str);
-            Assertions.assertTrue(hash1.equals(hash2));
+            Assertions.assertEquals(hash1, hash2);
         }
     }
 }

@@ -57,7 +57,7 @@ public class SecretServiceImpl implements SecretService {
         String key = reqDTO.getKey();
         String plainText = reqDTO.getPlainText();
         try {
-            res = SmUtils.encryptBySm4(key.substring(0, 32).toString(), key.substring(32).toString(), plainText);
+            res = SmUtils.encryptBySm4(key.substring(0, 32), key.substring(32), plainText);
         } catch (Exception e) {
             throw new RuntimeException(ErrorCodeEnum.ERROR_SECRET_KEY.getMsg());
         }
@@ -77,7 +77,7 @@ public class SecretServiceImpl implements SecretService {
         String key = reqDTO.getKey();
         String encData = reqDTO.getDecryptText();
         try {
-            res = SmUtils.decryptBySm4(key.substring(0, 32).toString(), key.substring(32).toString(), encData);
+            res = SmUtils.decryptBySm4(key.substring(0, 32), key.substring(32), encData);
         } catch (Exception e) {
             throw new RuntimeException(ErrorCodeEnum.ERROR_SECRET_KEY.getMsg());
         }

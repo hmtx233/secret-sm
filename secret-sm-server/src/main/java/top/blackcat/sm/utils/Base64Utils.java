@@ -5,7 +5,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 /***
- * sm算法
+ * Base64算法
  */
 public class Base64Utils {
 
